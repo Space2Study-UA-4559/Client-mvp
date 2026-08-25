@@ -1,0 +1,15 @@
+services:
+  client:
+    container_name: client
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      HUSKY: "0"
+      DOCKER: "1"
+      VITE_API_BASE_PATH: http://localhost:8080
+      VITE_GMAIL_CLIENT_ID: ${VITE_GMAIL_CLIENT_ID:-}
+      VITE_APP_IMG_URL: ${VITE_APP_IMG_URL:-}
+      VITE_APP_IMG_USER_URL: ${VITE_APP_IMG_USER_URL:-}
+    ports:
+      - "3000:3000"

@@ -1,0 +1,21 @@
+---
+description: When to use GitHub, Context7, MUI, Chrome DevTools, review, and dead-code tools
+alwaysApply: true
+---
+
+# MCP and analysis
+
+Keep the set small. Do not add Playwright, Sequential Thinking, filesystem, CodeRabbit, or Knip MCP.
+
+| Task | Use |
+| --- | --- |
+| MUI 5 | `mui-mcp`: `useMuiDocs` then `fetchDocs`. Not MUI 7 codegen. |
+| Vite 4 / React 17 / RTK / RR6 / Vitest 0.28 | Context7, pin those majors |
+| GitHub issues / PRs | GitHub MCP if authenticated, else `gh` |
+| Click-through UI on `:3000` | Built-in Browser |
+| Network (status, CORS, payload, failed `/auth`) | `chrome-devtools`: `list_network_requests` / `get_network_request`. Do not drive the same page with Browser and Chrome DevTools at once. |
+| Code review | Cursor Bugbot / Security Review subagents (`/review-bugbot`, `/review-security`). Not an extra MCP. |
+| Unused imports | `npm run lint`. `eslint:recommended` already flags unused bindings. |
+| Dead files / unused exports / unused deps | `npx knip@5` (Node 18). Official `@knip/mcp` needs Node 20+ — do not add it here. Report only; do not mass-delete in this fork. |
+
+GitHub: `GITHUB_PERSONAL_ACCESS_TOKEN` (Cursor: also `/add-plugin github`). Context7: optional `CONTEXT7_API_KEY`. Chrome DevTools needs local Chrome. Cursor: `.cursor/mcp.json`. VS Code: `.vscode/mcp.json` + `.github/copilot-instructions.md`. Claude Code: `CLAUDE.md` + `.mcp.json`. Codex: `AGENTS.md` + `.codex/config.toml`. Gemini: `GEMINI.md` + `.gemini/settings.json`.

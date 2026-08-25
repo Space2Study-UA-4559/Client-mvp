@@ -1,0 +1,15 @@
+---
+description: Core agent workflow, stack, git, and MCP for this frontend MVP
+alwaysApply: true
+---
+
+# Project
+
+- Stack: React 17, Vite 4, MUI 5 `sx`, Redux Toolkit (`createAsyncThunk`), React Router 6 (`createBrowserRouter`), axios, i18next `en`/`ua`, Vitest, Node 18.
+- Branch: `develop`. Do not invent a git-flow the repo does not use.
+- Reply in the user's language. Keep student-facing config comments in Ukrainian.
+- Do not commit `.env`, GitHub tokens, `node_modules`, `tests/coverage`, or `test-report.xml`.
+- Line endings are LF. Do not tell students to switch Git to CRLF.
+- UI: built-in Browser on `:3000`. Network/CORS: `chrome-devtools`. Review: Bugbot, not a review MCP. Unused imports: ESLint. Dead code: `npx knip@5`, not `@knip/mcp`. Docs: `mui-mcp` + Context7 (React 17 / Vite 4 / MUI 5).
+- Docker is Vite dev (`npm start` in the container), not a production nginx image.
+- Do not rebind Sonar/CI to `ita-social-projects` / SpaceToStudy.
