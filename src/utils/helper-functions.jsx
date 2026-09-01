@@ -43,8 +43,50 @@ export const getEmptyValues = (initialValues, defaultValue) => {
 export const findFullObjects = (array) =>
   array.filter((el) => Object.values(el).every((el) => el))
 
-export const getFormattedDate = (date) => {
-  return new Date(date).toLocaleDateString('en-US', {
+export const getFormattedDate = (dateOrOptions) => {
+  const isConfigObject =
+    dateOrOptions &&
+    typeof dateOrOptions === 'object' &&
+    !(dateOrOptions instanceof Date) &&
+    'date' in dateOrOptions
+
+  if (isConfigObject) {
+    const {
+      date,
+      locales = 'en-US',
+      options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      },
+      isCurrentDayHours = false,
+      includeOrdinal = false
+    } = dateOrOptions
+
+    const currentDate = new Date()
+    const formattedDate = new Date(date).toLocaleString(locales, options)
+
+    if (
+      isCurrentDayHours &&
+      currentDate.toDateString() === new Date(date).toDateString()
+    ) {
+      return new Date(date).toLocaleString(locales, {
+        hour: '2-digit',
+        minute: '2-digit'
+      })
+    }
+
+    if (includeOrdinal) {
+      const day = new Date(date).getDate()
+      const month = new Date(date).toLocaleString(locales, { month: 'long' })
+      const year = new Date(date).getFullYear()
+      return `${day} ${month} ${year}`
+    }
+
+    return formattedDate
+  }
+
+  return new Date(dateOrOptions).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'

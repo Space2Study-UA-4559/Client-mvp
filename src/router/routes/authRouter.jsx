@@ -8,8 +8,11 @@ import {
   editProfile,
   findOffers,
   myCooperations,
+  editQuestion,
   myOffers,
   myProfile,
+  myResources,
+  newQuestion,
   offerDetails,
   subjects,
   userProfile
@@ -27,6 +30,10 @@ const Categories = lazy(() => import('~/pages/categories/Categories'))
 const FindOffers = lazy(() => import('~/pages/find-offers/FindOffers'))
 const TutorProfile = lazy(() => import('~/pages/tutor-profile/TutorProfile'))
 const OfferDetails = lazy(() => import('~/pages/offer-details/OfferDetails'))
+const MyResources = lazy(() => import('~/pages/my-resources/MyResources'))
+const CreateOrEditQuestion = lazy(() =>
+  import('~/pages/create-or-edit-question/CreateOrEditQuestion')
+)
 
 export const authRouter = (
   <Route element={<PrivateRoute role={[student, tutor]} />}>
@@ -75,6 +82,21 @@ export const authRouter = (
       element={<MyOffers />}
       handle={{ crumb: myOffers }}
       path={authRoutes.accountMenu.myOffers.route}
+    />
+    <Route
+      element={<MyResources />}
+      handle={{ crumb: myResources }}
+      path={authRoutes.myResources.root.route}
+    />
+    <Route
+      element={<CreateOrEditQuestion />}
+      handle={{ crumb: [myResources, newQuestion] }}
+      path={authRoutes.myResources.newQuestion.route}
+    />
+    <Route
+      element={<CreateOrEditQuestion />}
+      handle={{ crumb: [myResources, editQuestion] }}
+      path={authRoutes.myResources.editQuestion.route}
     />
   </Route>
 )

@@ -6,7 +6,8 @@ export const useForm = ({
   initialValues,
   initialErrors = getEmptyValues(initialValues, ''),
   validations,
-  onSubmit
+  onSubmit,
+  submitWithData
 }) => {
   const [data, setData] = useState(initialValues)
   const [isDirty, setDirty] = useState(false)
@@ -79,6 +80,7 @@ export const useForm = ({
   const handleSubmit = (event) => {
     event.preventDefault()
     let isValid = true
+    const submittedData = submitWithData ? data : undefined
     const newErrors = { ...errors }
 
     if (validations) {
@@ -92,18 +94,48 @@ export const useForm = ({
       }
     }
 
-    isValid ? void onSubmit() : setErrors(newErrors)
+    isValid ? onSubmit && void onSubmit(submittedData) : setErrors(newErrors)
+  }
+
+  const resetData = (keys = []) => {
+    setData((prev) => {
+      if (keys.length === 0) return initialValues
+
+      const newData = { ...prev }
+
+      keys.forEach((key) => {
+        newData[key] = initialValues[key]
+      })
+
+      return newData
+    })
+  }
+
+  const handleDataChange = (newData) => {
+    const filteredNewData = Object.keys(newData).reduce((acc, key) => {
+      if (Object.prototype.hasOwnProperty.call(initialValues, key)) {
+        return { ...acc, [key]: newData[key] }
+      }
+      return acc
+    }, {})
+
+    setData((prev) => ({
+      ...prev,
+      ...filteredNewData
+    }))
   }
 
   return {
     data,
     isDirty,
     errors,
+    handleDataChange,
     handleInputChange,
     handleNonInputValueChange,
     handleBlur,
     handleErrors,
-    handleSubmit
+    handleSubmit,
+    resetData
   }
 }
 

@@ -39,5 +39,20 @@ export const URLs = {
     get: '/cooperations',
     create: '/cooperations',
     update: '/cooperations'
+  },
+  resources: {
+    questions: {
+      get: '/questions',
+      delete: '/questions',
+      post: '/questions',
+      patch: '/questions'
+    },
+    resourcesCategories: {
+      get: '/resources-categories',
+      getNames: '/resources-categories/names',
+      patch: '/resources-categories',
+      post: '/resources-categories',
+      delete: '/resources-categories'
+    }
   }
 }

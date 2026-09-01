@@ -52,6 +52,21 @@ export const offerDetails = {
   path: authRoutes.offerDetails.route
 }
 
+export const myResources = {
+  name: t('breadCrumbs.myResources'),
+  path: authRoutes.myResources.root.route
+}
+
+export const newQuestion = {
+  name: t('breadCrumbs.newQuestion'),
+  path: authRoutes.myResources.newQuestion.route
+}
+
+export const editQuestion = {
+  name: t('breadCrumbs.editQuestion'),
+  path: authRoutes.myResources.editQuestion.route
+}
+
 export const userProfile = ({ data }) => ({
   name: `${data.firstName} ${data.lastName}`
 })
