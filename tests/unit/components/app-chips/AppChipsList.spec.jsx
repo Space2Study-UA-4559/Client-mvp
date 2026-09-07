@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import AppChipList from '~/components/app-chips-list/AppChipList'
-import { vi } from 'vitest'
+import { vi, afterEach } from 'vitest'
 
 const handleChipDelete = vi.fn()
 
@@ -18,6 +18,10 @@ const items = [
 ]
 
 describe('AppChip test', () => {
+  afterEach(() => {
+    vi.clearAllMocks()
+  })
+
   it('should show chips', () => {
     render(
       <AppChipList
@@ -79,7 +83,7 @@ describe('AppChip test', () => {
     expect(newChips.length).toBe(17)
   })
 
-  it('should delete one chip', () => {
+  it('should delete one chip and call handleChipDelete with correct item', () => {
     render(
       <AppChipList
         defaultQuantity={7}
@@ -89,13 +93,16 @@ describe('AppChip test', () => {
     )
     const closeBtn = screen.queryAllByTestId('close-btn')
 
-    const firstChip = screen.queryAllByTestId('chip')[0]
-
-    expect(firstChip).toBeDefined()
-
     fireEvent.click(closeBtn[0])
 
-    const newChips = screen.queryAllByTestId('chip')
-    expect(newChips.length).toBe(7)
+    expect(handleChipDelete).toHaveBeenCalledTimes(1)
+    expect(handleChipDelete).toHaveBeenCalledWith(items[0])
+  })
+
+  it('should not render close button when handleChipDelete is not provided', () => {
+    render(<AppChipList defaultQuantity={7} items={items} />)
+
+    const closeBtn = screen.queryAllByTestId('close-btn')
+    expect(closeBtn.length).toBe(0)
   })
 })
