@@ -27,7 +27,13 @@ const PopupDialog = ({
 
   const handleMouseOver = () => timerId && clearTimeout(timerId)
   const handleMouseLeave = () => timerId && closeModalAfterDelay()
-  const handleClose = () => void onClose()
+
+  const handleClose = (event, reason) => {
+    if (reason === 'backdropClick') {
+      return
+    }
+    void onClose()
+  }
 
   return (
     <Dialog
