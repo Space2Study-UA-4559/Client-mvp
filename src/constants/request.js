@@ -2,10 +2,6 @@ export const URLs = {
   example: {
     get: '/example'
   },
-  location: {
-    getCountries: '/location/countries',
-    getCities: 'location/cities'
-  },
   auth: {
     login: '/auth/login',
     googleAuth: '/auth/google-auth',

@@ -3,26 +3,6 @@ import CardsWithButton from '~/containers/guest-home-page/cards-with-button/Card
 import { renderWithProviders } from '~tests/test-utils'
 import howItWorksTutorFirst from '~/assets/img/guest-home-page/howItWorksTutorFirst.svg'
 import howItWorksTutorSecond from '~/assets/img/guest-home-page/howItWorksTutorSecond.svg'
-import { vi } from 'vitest'
-
-const mockDispatch = vi.fn()
-const mockSelector = vi.fn()
-
-vi.mock('react-redux', async () => {
-  const actual = await vi.importActual('react-redux')
-  return {
-    ...actual,
-    useDispatch: () => mockDispatch,
-    useSelector: () => mockSelector
-  }
-})
-
-vi.mock('~/containers/guest-home-page/google-button/GoogleButton', () => ({
-  __esModule: true,
-  default: function () {
-    return <button>Google</button>
-  }
-}))
 
 describe('CardsWithButton container', () => {
   const items = [
@@ -38,7 +18,8 @@ describe('CardsWithButton container', () => {
         'guestHomePage.howItWorks.tutor.createATutorAccount.description'
     }
   ]
-  beforeEach(() => {
+
+  it('should render the button without opening a popup', () => {
     renderWithProviders(
       <CardsWithButton
         array={items}
@@ -46,14 +27,10 @@ describe('CardsWithButton container', () => {
         role={'tutor'}
       />
     )
-  })
 
-  it('should render popup after button click', () => {
     const btn = screen.getByText('Become a tutor')
     fireEvent.click(btn)
 
-    const popup = screen.getByTestId('popup')
-
-    expect(popup).toBeInTheDocument()
+    expect(screen.queryByTestId('popup')).not.toBeInTheDocument()
   })
 })

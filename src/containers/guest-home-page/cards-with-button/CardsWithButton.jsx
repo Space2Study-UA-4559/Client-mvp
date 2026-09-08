@@ -5,18 +5,11 @@ import Box from '@mui/material/Box'
 import dots from '~/assets/img/guest-home-page/dots.svg'
 import AppButton from '~/components/app-button/AppButton'
 import TitleWithDescription from '~/components/title-with-description/TitleWithDescription'
-import SignupDialog from '~/containers/guest-home-page/signup-dialog/SignupDialog'
-import { useModalContext } from '~/context/modal-context'
 
 import { styles } from '~/containers/guest-home-page/cards-with-button/CardsWithButton.styles'
 
-const CardsWithButton = ({ array, role, btnText, isStudent }) => {
+const CardsWithButton = ({ array, btnText, isStudent }) => {
   const { t } = useTranslation()
-  const { openModal } = useModalContext()
-
-  const openDialog = () => {
-    openModal({ component: <SignupDialog type={role} /> })
-  }
 
   const cards = (state) =>
     array.map((item, key) => {
@@ -50,7 +43,7 @@ const CardsWithButton = ({ array, role, btnText, isStudent }) => {
       <Transition in={isStudent} timeout={300}>
         {(state) => cards(state)}
       </Transition>
-      <AppButton onClick={openDialog} size={'extraLarge'} sx={styles.button}>
+      <AppButton size={'extraLarge'} sx={styles.button}>
         {btnText}
       </AppButton>
     </>
