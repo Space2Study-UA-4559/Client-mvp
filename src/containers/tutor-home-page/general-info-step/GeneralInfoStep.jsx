@@ -116,6 +116,7 @@ const GeneralInfoStep = ({
 
         <Box sx={styles.locationRow}>
           <AppAutoComplete
+            forcePopupIcon
             onChange={(event, value) =>
               handleNonInputValueChange('country', value)
             }
@@ -126,6 +127,7 @@ const GeneralInfoStep = ({
           />
           <AppAutoComplete
             disabled={!data.country}
+            forcePopupIcon
             onChange={(event, value) =>
               handleNonInputValueChange('city', value)
             }

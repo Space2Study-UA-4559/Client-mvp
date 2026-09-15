@@ -21,6 +21,7 @@ const AppAutoComplete = ({
   return (
     <Autocomplete
       ListboxProps={ListboxProps}
+      clearIcon={hideClearIcon ? null : undefined}
       filterOptions={filterOptions}
       isOptionEqualToValue={(option, value) => option === value}
       options={options || []}
@@ -37,9 +38,7 @@ const AppAutoComplete = ({
                 {props.loading ? (
                   <Loader size={20} sx={{ color: 'primary.600' }} />
                 ) : null}
-                {props.value &&
-                  !hideClearIcon &&
-                  params.InputProps.endAdornment}
+                {params.InputProps.endAdornment}
               </Fragment>
             )
           }}
