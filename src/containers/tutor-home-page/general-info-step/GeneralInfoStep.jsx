@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
@@ -78,15 +78,21 @@ const GeneralInfoStep = ({
     }
   })
 
+  const isFirstRender = useRef(true)
+
   useEffect(() => {
     if (data.country) {
       setCities(mockCitiesByCountry[data.country] || [])
     } else {
       setCities([])
     }
-    handleNonInputValueChange('city', null)
-  }, [data.country])
 
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+    } else {
+      handleNonInputValueChange('city', null)
+    }
+  }, [data.country])
   useEffect(() => {
     handleStepData(stepLabel, data, errors)
   }, [data, errors])
