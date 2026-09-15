@@ -48,7 +48,9 @@ const GeneralInfoStep = ({
 }) => {
   const { t } = useTranslation()
   const { userId, userRole } = useSelector((state) => state.appMain)
-  const { handleStepData } = useStepContext()
+  const { stepData, handleStepData } = useStepContext()
+
+  const savedData = stepData[stepLabel]?.data
 
   const {
     data,
@@ -57,7 +59,10 @@ const GeneralInfoStep = ({
     handleNonInputValueChange,
     handleBlur,
     handleDataChange
-  } = useForm({ initialValues, validations })
+  } = useForm({
+    initialValues: savedData || initialValues,
+    validations
+  })
 
   const [cities, setCities] = useState([])
 
@@ -79,6 +84,7 @@ const GeneralInfoStep = ({
     } else {
       setCities([])
     }
+    handleNonInputValueChange('city', null)
   }, [data.country])
 
   useEffect(() => {
