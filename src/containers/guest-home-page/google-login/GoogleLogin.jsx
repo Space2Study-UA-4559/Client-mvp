@@ -9,7 +9,7 @@ import GoogleButton from '~/containers/guest-home-page/google-button/GoogleButto
 
 import { styles } from '~/containers/guest-home-page/google-login/GoogleLogin.styles'
 
-const GoogleLogin = ({ type, buttonWidth, role }) => {
+const GoogleLogin = ({ type, buttonWidth, role, disabled }) => {
   const { t } = useTranslation()
   const { whatCanYouDo } = guestRoutes.navBar
   const { openModal, closeModal } = useModalContext()
@@ -29,6 +29,7 @@ const GoogleLogin = ({ type, buttonWidth, role }) => {
 
       <GoogleButton
         buttonWidth={buttonWidth}
+        disabled={disabled}
         role={role}
         route={whatCanYouDo.path}
         type={type}
