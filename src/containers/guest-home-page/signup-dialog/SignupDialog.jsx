@@ -6,10 +6,20 @@ import studentImg from '~/assets/img/signup-dialog/student.svg'
 import styles from '~/containers/guest-home-page/signup-dialog/SignupDialog.styles'
 import SignupForm from '~/containers/guest-home-page/signup-form/SignupForm'
 import useForm from '~/hooks/use-form'
+import {
+  firstName,
+  lastName,
+  email,
+  password,
+  confirmPassword
+} from '~/utils/validations/signup'
 import GoogleLogin from '~/containers/guest-home-page/google-login/GoogleLogin'
+import useConfirm from '~/hooks/use-confirm'
+import { useEffect } from 'react'
 
 const SignupDialog = ({ type }) => {
   const { t } = useTranslation()
+  const { setNeedConfirmation } = useConfirm()
 
   const { data, errors, handleBlur, handleInputChange, handleSubmit } = useForm(
     {
@@ -20,9 +30,24 @@ const SignupDialog = ({ type }) => {
         password: '',
         confirmPassword: '',
         iAgree: false
-      }
+      },
+      validations: { firstName, lastName, email, password, confirmPassword }
     }
   )
+
+  useEffect(() => {
+    const { firstName, lastName, email, password, confirmPassword } = data
+
+    const hasFieldFilled = [
+      firstName,
+      lastName,
+      email,
+      password,
+      confirmPassword
+    ].some((field) => field !== '')
+
+    setNeedConfirmation(hasFieldFilled)
+  }, [data, setNeedConfirmation])
 
   return (
     <Box sx={styles.root}>
