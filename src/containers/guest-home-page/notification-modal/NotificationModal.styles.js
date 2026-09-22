@@ -1,5 +1,6 @@
 export const styles = {
   root: {
+    position: 'relative',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -9,5 +10,10 @@ export const styles = {
   imgTitleDesc: {
     root: { textAlign: 'center', mb: '18px' },
     titleWithDescription: { title: { typography: 'h5', mb: '12px' } }
+  },
+  iconButton: {
+    position: 'absolute',
+    top: '8px',
+    right: '8px'
   }
 }
