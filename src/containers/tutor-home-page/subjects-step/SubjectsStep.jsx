@@ -167,7 +167,11 @@ const SubjectsStep = ({ btnsBox, stepLabel, isStudent = false }) => {
                     </InputAdornment>
                   ) : null
                 }
-                label={t('becomeTutor.categories.mainSubjectsLabel')}
+                {t(
+                  isStudent
+                    ? 'becomeTutor.categories.mainInterestsLabel'
+                    : 'becomeTutor.categories.mainSubjectsLabel'
+                )}}
                 onChange={(event) =>
                   handleCategoryChange(index, event.target.value)
                 }
