@@ -10,6 +10,7 @@ import WestIcon from '@mui/icons-material/West'
 import AppButton from '~/components/app-button/AppButton'
 import { styles } from '~/components/step-wrapper/StepWrapper.styles'
 import useSteps from '~/hooks/use-steps'
+import { useStepContext } from '~/context/step-context'
 
 const StepWrapper = ({ children, steps }) => {
   const { activeStep, isLastStep, loading, stepOperation } = useSteps({
@@ -17,6 +18,15 @@ const StepWrapper = ({ children, steps }) => {
   })
   const { next, back, setActiveStep, handleSubmit } = stepOperation
   const { t } = useTranslation()
+  const { stepData } = useStepContext()
+
+  const currentStepLabel = steps[activeStep]
+  const currentStepData = stepData[currentStepLabel]
+  const currentStepErrors =
+    currentStepData && !Array.isArray(currentStepData) && currentStepData.errors
+      ? currentStepData.errors
+      : {}
+  const hasErrors = Object.values(currentStepErrors).some((error) => error)
 
   const stepLabels = steps.map((step, index) => (
     <Box
@@ -31,6 +41,7 @@ const StepWrapper = ({ children, steps }) => {
 
   const nextButton = isLastStep ? (
     <AppButton
+      disabled={hasErrors}
       loading={loading}
       onClick={handleSubmit}
       size='small'
@@ -40,7 +51,13 @@ const StepWrapper = ({ children, steps }) => {
       {t('common.finish')}
     </AppButton>
   ) : (
-    <AppButton onClick={next} size='small' sx={styles.btn} variant='contained'>
+    <AppButton
+      disabled={hasErrors}
+      onClick={next}
+      size='small'
+      sx={styles.btn}
+      variant='contained'
+    >
       {t('common.next')}
       <EastIcon fontSize='small' />
     </AppButton>
