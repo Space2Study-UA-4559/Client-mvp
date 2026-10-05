@@ -3,6 +3,7 @@ import CardsWithButton from '~/containers/guest-home-page/cards-with-button/Card
 import { renderWithProviders } from '~tests/test-utils'
 import howItWorksTutorFirst from '~/assets/img/guest-home-page/howItWorksTutorFirst.svg'
 import howItWorksTutorSecond from '~/assets/img/guest-home-page/howItWorksTutorSecond.svg'
+import { tutor } from '~/constants'
 
 describe('CardsWithButton container', () => {
   const items = [
@@ -19,18 +20,15 @@ describe('CardsWithButton container', () => {
     }
   ]
 
-  it('should render the button without opening a popup', () => {
+  it('should open signup popup after click', async () => {
     renderWithProviders(
-      <CardsWithButton
-        array={items}
-        btnText={'Become a tutor'}
-        role={'tutor'}
-      />
+      <CardsWithButton array={items} btnText={'Become a tutor'} role={tutor} />
     )
 
     const btn = screen.getByText('Become a tutor')
     fireEvent.click(btn)
 
-    expect(screen.queryByTestId('popup')).not.toBeInTheDocument()
+    expect(await screen.findByTestId('popup')).toBeInTheDocument()
+    expect(screen.getByText('signup.head.tutor')).toBeInTheDocument()
   })
 })

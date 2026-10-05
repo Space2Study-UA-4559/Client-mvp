@@ -11,7 +11,7 @@ import useBreakpoints from '~/hooks/use-breakpoints'
 import { snackbarVariants } from '~/constants'
 import { styles } from '~/containers/guest-home-page/google-button/GoogleButton.styles'
 
-const GoogleButton = ({ role, route, buttonWidth, type }) => {
+const GoogleButton = ({ role, route, buttonWidth, type, disabled }) => {
   const dispatch = useDispatch()
   const mediaQuery = useBreakpoints().isLaptopAndAbove ? 'md' : 'xs'
   const { closeModal } = useModalContext()
@@ -53,7 +53,15 @@ const GoogleButton = ({ role, route, buttonWidth, type }) => {
     })
   }, [handleCredentialResponse, buttonWidth, type, mediaQuery])
 
-  return <div id='googleButton' style={styles.google} />
+  return (
+    <div
+      id='googleButton'
+      style={{
+        ...styles.google,
+        ...(disabled && { pointerEvents: 'none', opacity: 0.6 })
+      }}
+    />
+  )
 }
 
 export default GoogleButton

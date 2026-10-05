@@ -47,14 +47,14 @@ const HowItWorks = () => {
           typographyVariant={'h6'}
         />
         <CardsWithButton
-          array={isStudent ? tutorCardBoxArray : studentCardBoxArray}
+          array={isStudent ? studentCardBoxArray : tutorCardBoxArray}
           btnText={
             isStudent
               ? t('guestHomePage.whatCanYouDo.learn.actionLabel')
               : t('guestHomePage.whatCanYouDo.teach.actionLabel')
           }
           isStudent={isStudent}
-          role={isStudent ? tutor : student}
+          role={isStudent ? student : tutor}
         />
       </Box>
     </Box>
