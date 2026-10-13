@@ -5,7 +5,7 @@ export const styles = {
     display: 'grid',
     gridTemplateColumns: {
       xs: '1fr',
-      sm: '1fr 1fr'
+      sm: '1.2fr 1fr'
     },
     gridTemplateAreas: {
       xs: '"content" "buttons"',
@@ -25,7 +25,9 @@ export const styles = {
   },
 
   image: {
+    display: { xs: 'none', sm: 'block' },
     gridArea: 'image',
+    maxWidth: { xs: '240px', sm: '400px' },
     width: '100%',
     height: '100%',
     objectFit: 'contain',

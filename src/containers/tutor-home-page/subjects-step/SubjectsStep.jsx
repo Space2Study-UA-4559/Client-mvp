@@ -1,9 +1,8 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
-import CircularProgress from '@mui/material/CircularProgress'
 import FormControl from '@mui/material/FormControl'
 import IconButton from '@mui/material/IconButton'
 import InputAdornment from '@mui/material/InputAdornment'
@@ -17,69 +16,76 @@ import { useTranslation } from 'react-i18next'
 
 import studyCategoryImage from '~/assets/img/tutor-home-page/become-tutor/study-category.svg'
 import { styles } from '~/containers/tutor-home-page/subjects-step/SubjectsStep.styles'
-import { categoryService } from '~/services/category-service'
-import { subjectService } from '~/services/subject-service'
+import {
+  categoriesMock,
+  languagesMock
+} from '~/containers/tutor-home-page/subjects-step/constants'
 import { useStepContext } from '~/context/step-context'
 
 const SubjectsStep = ({ btnsBox, stepLabel, isStudent = false }) => {
   const { t } = useTranslation()
-  const { handleStepData } = useStepContext()
+  const { stepData, handleStepData } = useStepContext()
 
-  const [category, setCategory] = useState(null)
+  const [category, setCategory] = useState('')
   const [selectedSubject, setSelectedSubject] = useState('')
   const [selectedSubjects, setSelectedSubjects] = useState([])
-
-  const [categories, setCategories] = useState([])
   const [subjects, setSubjects] = useState([])
 
-  const [categoriesLoading, setCategoriesLoading] = useState(false)
-  const [subjectsLoading, setSubjectsLoading] = useState(false)
+  const restoredStep = useRef(null)
 
   const studentStep = isStudent || stepLabel === 'interests'
 
-  const fetchCategories = async () => {
-    if (categories.length) {
-      return
-    }
-
-    try {
-      setCategoriesLoading(true)
-
-      const response = await categoryService.getCategoriesNames()
-
-      setCategories(response.data)
-    } finally {
-      setCategoriesLoading(false)
-    }
-  }
-
-  const fetchSubjects = async () => {
-    if (!category) {
-      return
-    }
-
-    try {
-      setSubjectsLoading(true)
-
-      const response = await subjectService.getSubjectsNames(category)
-
-      setSubjects(response.data)
-    } finally {
-      setSubjectsLoading(false)
-    }
-  }
-
   const updateStepData = useCallback(
     (newSubjects, selectedCategory = category) => {
-      const stepData = newSubjects.map((subject) => ({
-        category: selectedCategory,
-        subject: subject._id
-      }))
-
-      handleStepData(stepLabel, stepData)
+      handleStepData(
+        stepLabel,
+        newSubjects.map((subject) => ({
+          category: selectedCategory || null,
+          subject: subject._id
+        }))
+      )
     },
     [category, handleStepData, stepLabel]
   )
+
+  const getSubjectsByCategory = (categoryName) => {
+    if (categoryName === 'Languages') {
+      return languagesMock.map((item) => ({
+        _id: item.name,
+        name: item.name
+      }))
+    }
+
+    return []
+  }
+
+  useEffect(() => {
+    const savedSubjects = stepData[stepLabel] || []
+
+    if (restoredStep.current === stepLabel) {
+      return
+    }
+
+    restoredStep.current = stepLabel
+
+    if (!savedSubjects.length || !savedSubjects[0].category) {
+      return
+    }
+
+    const savedCategory = savedSubjects[0].category
+    const availableSubjects = getSubjectsByCategory(savedCategory)
+
+    setCategory(savedCategory)
+    setSubjects(availableSubjects)
+
+    setSelectedSubjects(
+      savedSubjects
+        .map((saved) =>
+          availableSubjects.find((subject) => subject._id === saved.subject)
+        )
+        .filter(Boolean)
+    )
+  }, [stepData, stepLabel])
 
   const handleCategoryChange = (event) => {
     const newCategory = event.target.value
@@ -87,7 +93,7 @@ const SubjectsStep = ({ btnsBox, stepLabel, isStudent = false }) => {
     setCategory(newCategory)
     setSelectedSubject('')
     setSelectedSubjects([])
-    setSubjects([])
+    setSubjects(getSubjectsByCategory(newCategory))
 
     updateStepData([], newCategory)
   }
@@ -97,7 +103,7 @@ const SubjectsStep = ({ btnsBox, stepLabel, isStudent = false }) => {
   }
 
   const clearCategory = () => {
-    setCategory(null)
+    setCategory('')
     setSelectedSubject('')
     setSelectedSubjects([])
     setSubjects([])
@@ -125,7 +131,7 @@ const SubjectsStep = ({ btnsBox, stepLabel, isStudent = false }) => {
 
     const subject = subjects.find((item) => item._id === selectedSubject)
 
-    if (!subject) {
+    if (!subject || selectedSubjects.some((item) => item._id === subject._id)) {
       return
     }
 
@@ -133,12 +139,11 @@ const SubjectsStep = ({ btnsBox, stepLabel, isStudent = false }) => {
 
     setSelectedSubjects(newSubjects)
     setSelectedSubject('')
-
     updateStepData(newSubjects)
   }
 
-  const visibleSubjects = selectedSubjects.slice(0, 6)
-  const hiddenSubjectsCount = Math.max(selectedSubjects.length - 6, 0)
+  const visibleSubjects = selectedSubjects.slice(0, 2)
+  const hiddenSubjectsCount = Math.max(selectedSubjects.length - 2, 0)
 
   return (
     <Box sx={styles.container}>
@@ -150,7 +155,7 @@ const SubjectsStep = ({ btnsBox, stepLabel, isStudent = false }) => {
         </Typography>
 
         <FormControl fullWidth>
-          <InputLabel>
+          <InputLabel id='subjects-step-category-label'>
             {t(
               studentStep
                 ? 'becomeTutor.categories.mainInterestsLabel'
@@ -178,26 +183,22 @@ const SubjectsStep = ({ btnsBox, stepLabel, isStudent = false }) => {
                 ? 'becomeTutor.categories.mainInterestsLabel'
                 : 'becomeTutor.categories.mainSubjectsLabel'
             )}
+            labelId='subjects-step-category-label'
             onChange={handleCategoryChange}
-            onOpen={fetchCategories}
-            value={category || ''}
+            value={category}
           >
-            {categoriesLoading ? (
-              <MenuItem disabled>
-                <CircularProgress size={20} />
+            {categoriesMock.map((item) => (
+              <MenuItem key={item.name} value={item.name}>
+                {item.name}
               </MenuItem>
-            ) : (
-              categories.map((item) => (
-                <MenuItem key={item._id} value={item._id}>
-                  {item.name}
-                </MenuItem>
-              ))
-            )}
+            ))}
           </Select>
         </FormControl>
 
         <FormControl disabled={!category} fullWidth>
-          <InputLabel>{t('becomeTutor.categories.subjectLabel')}</InputLabel>
+          <InputLabel id='subjects-step-subject-label'>
+            {t('becomeTutor.categories.subjectLabel')}
+          </InputLabel>
 
           <Select
             endAdornment={
@@ -215,27 +216,21 @@ const SubjectsStep = ({ btnsBox, stepLabel, isStudent = false }) => {
               ) : null
             }
             label={t('becomeTutor.categories.subjectLabel')}
+            labelId='subjects-step-subject-label'
             onChange={handleSubjectChange}
-            onOpen={fetchSubjects}
             value={selectedSubject}
           >
-            {subjectsLoading ? (
-              <MenuItem disabled>
-                <CircularProgress size={20} />
+            {subjects.map((item) => (
+              <MenuItem
+                disabled={selectedSubjects.some(
+                  (subject) => subject._id === item._id
+                )}
+                key={item._id}
+                value={item._id}
+              >
+                {item.name}
               </MenuItem>
-            ) : (
-              subjects.map((item) => (
-                <MenuItem
-                  disabled={selectedSubjects.some(
-                    (subject) => subject._id === item._id
-                  )}
-                  key={item._id}
-                  value={item._id}
-                >
-                  {item.name}
-                </MenuItem>
-              ))
-            )}
+            ))}
           </Select>
         </FormControl>
 
